@@ -66,8 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\BallComponent.cs" />
     <Compile Include="Components\PadComponent.cs" />
     <Compile Include="Components\PlaneComponent.cs" />
+    <Compile Include="Controllers\PadController.cs" />
     <Compile Include="PingPongGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

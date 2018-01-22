@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Engine;
 using SharpDX;
 using SharpDX.Direct3D;
@@ -11,46 +10,61 @@ using SharpDX.Direct3D11;
 
 namespace SharpDXPingPong.Components
 {
-    class PadComponent : GameComponent
+    class BallComponent : GameComponent
     {
         private List<Vector4> _points = new List<Vector4>();
         private readonly Camera _camera;
 
-        internal float Height = 0.1f;
-        internal float Width { get; set; }
+        internal float BasicRadius { get; set; }
+        internal Vector2 Radius;
         internal Vector2 Center;
         internal float Velocity { get; set; }
+        
+        internal float verticalDirection = -1;  // down
+        internal float horizontalDirection = -1;  // left
 
-        public PadComponent(
-            Game game,
-            string vertexShaderFilename,
-            string pixelShaderFilename,
-            Camera camera)
+        public BallComponent(Game game, string vertexShaderFilename, string pixelShaderFilename, Camera camera)
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
-            this._camera = camera;
-            Width = 0.25f;
-            Center = new Vector2(0.0f, -1 + 0.00625f + this.Height);
-            Velocity = 1.0f;
+            _camera = camera;
+            BasicRadius = 0.05f;
+            Radius = new Vector2(BasicRadius, BasicRadius * Game.GetWidth() / Game.GetHeight());
+            Center = new Vector2(0, 0);
+            Velocity = 0.005f;
         }
 
         protected override Vector4[] GetPoints()
         {
-            _points = new List<Vector4>()
+            const int numpoints = 24;
+            const float pi = 3.14159f;
+            const float wedgeAngle = 2 * pi / numpoints;
+
+            _points = new List<Vector4>();
+            
+            for (var i = 0; i < numpoints; i++)
             {
-                new Vector4(Center.X - Width / 2, Center.Y + Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(Center.X + Width / 2, Center.Y + Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(Center.X + Width / 2, Center.Y - Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(Center.X - Width / 2, Center.Y + Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(Center.X - Width / 2, Center.Y - Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(Center.X + Width / 2, Center.Y - Height / 2, 0.0f, 1.0f),
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f)
-            };
+                //Calculate theta for this vertex
+                var theta = i * wedgeAngle;
+
+                //Compute X and Y locations
+                var x = (float)(Center.X + Radius.X * Math.Cos(theta));
+                var y = (float)(Center.Y - Radius.Y * Math.Sin(theta));
+                _points.Add(new Vector4(x, y, 0.0f, 1.0f));
+                _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                var theta1 = (i + 1) * wedgeAngle;
+                var x1 = (float) (Center.X + Radius.X * Math.Cos(theta1));
+                var y1 = (float) (Center.Y - Radius.Y * Math.Sin(theta1));
+                _points.Add(new Vector4(x1, y1, 0.0f, 1.0f));
+                _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                _points.Add(new Vector4(Center.X, Center.Y, 0.0f, 1.0f));
+                _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+            }
+
+            _points.Add(new Vector4(Center.X, Center.Y, 1.0f, 1.0f));
+            _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
             return _points.ToArray();
         }
 
@@ -82,6 +96,9 @@ namespace SharpDXPingPong.Components
         public override void Update(float deltaTime)
         {
             var worldViewProj = _camera.ViewMatrix * _camera.GetProjectionMatrix();
+
+            Radius.X = BasicRadius;
+            Radius.Y = BasicRadius * Game.GetWidth() / Game.GetHeight();
             InitBuffer();
             Game.Context.UpdateSubresource(ref worldViewProj, StaticContantBuffer);
         }
@@ -94,5 +111,6 @@ namespace SharpDXPingPong.Components
             Game.Context.Draw(_points.Count, 0);
             Game.Context.Rasterizer.State = oldState;
         }
+
     }
 }
