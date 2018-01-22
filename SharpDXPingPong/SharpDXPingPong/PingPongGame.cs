@@ -16,13 +16,15 @@ namespace SharpDXPingPong
             _cameraController = new CameraController(this, _camera)
             {
                 CameraPosition = new Vector3(0, 0, 300),
-                VelocityMagnitude = 100f
+//                VelocityMagnitude = 0f,
+//                MouseSensitivity = 0f
             };
         }
 
         protected override void Init()
         {
-            Components.Add(new PlaneComponent(this, _camera, "Proj.hlsl", "Proj.hlsl"));
+            Components.Add(new PlaneComponent(this, "Proj.hlsl", "Proj.hlsl", _camera));
+            Components.Add(new PadComponent(this, "Shader.hlsl", "Shader.hlsl", _camera));
             base.Init();
         }
 

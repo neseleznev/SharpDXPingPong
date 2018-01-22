@@ -12,7 +12,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 namespace Engine
 {
-    public class Game : IAspectable
+    public class Game : ISizeable
     {
         public static Game Instance { protected set; get; }
         public string Name { protected set; get; }
@@ -247,9 +247,14 @@ namespace Engine
             _isShutdownRequested = true;
         }
 
-        public float GetAspectRatio()
+        public float GetWidth()
         {
-            return _windowWidth / (float) _windowHeight;
+            return _windowWidth;
+        }
+
+        public float GetHeight()
+        {
+            return _windowHeight;
         }
     }
 }

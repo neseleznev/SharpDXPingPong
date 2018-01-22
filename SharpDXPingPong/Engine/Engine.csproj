@@ -68,7 +68,7 @@
     <Compile Include="CameraController.cs" />
     <Compile Include="GameComponent.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="IAspectable.cs" />
+    <Compile Include="ISizeable.cs" />
     <Compile Include="InputDevice.cs" />
     <Compile Include="IGameComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

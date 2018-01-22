@@ -13,9 +13,9 @@ namespace SharpDXPingPong.Components
 
         public PlaneComponent(
             Game game,
-            Camera camera,
             string vertexShaderFilename,
-            string pixelShaderFilename)
+            string pixelShaderFilename,
+            Camera camera)
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
             _camera = camera;
@@ -23,7 +23,7 @@ namespace SharpDXPingPong.Components
 
         protected override Vector4[] GetPoints()
         {
-            const float step = 100.0f;
+            const float step = 10.0f;
             const float dist = 1000.0f;
 
             for (var i = (int)(-dist / step); i < (int)(dist / step) + 1; i++)
