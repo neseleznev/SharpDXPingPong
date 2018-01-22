@@ -18,7 +18,8 @@ namespace SharpDXPingPong
         private WarpComponent _speedUp;
         private WarpComponent _speedDown;
         private readonly Random _random;
-        
+        private bool _isGameOver;
+
         internal PingPongGame(string name, int width = 800, int height = 600) : base(name, width, height)
         {
             _camera = new Camera(this);
@@ -81,7 +82,7 @@ namespace SharpDXPingPong
 
             _cameraController.Update(deltaTime);
 
-            if (IsGameOver)
+            if (_isGameOver)
             {
                 return;
             }
@@ -176,15 +177,14 @@ namespace SharpDXPingPong
             base.Update(deltaTime);
         }
 
-        private bool IsGameOver;
         public void GameOver()
         {
-            IsGameOver = true;
+            _isGameOver = true;
         }
 
         public void StartNewGame()
         {
-            IsGameOver = false;
+            _isGameOver = false;
             _ball.Reset();
             _pad.Reset();
         }

@@ -60,13 +60,13 @@ namespace SharpDXPingPong.Controllers
         {
             var leftX = _pad.Center.X - _pad.Width / 2;
             var rightX = _pad.Center.X + _pad.Width / 2;
-            var padY = GetPadStopLine();
+            var padY = _pad.Center.Y + _pad.Height / 2;
             return leftX < x && x < rightX && padY - 0.01 < y && y < padY + 1e-5f;
         }
 
         public float GetPadStopLine()
         {
-            return _pad.Center.Y + _pad.Height / 2;
+            return _pad.Center.Y - _pad.Height / 2;
         }
 
         public void IncreaseSpeed()
