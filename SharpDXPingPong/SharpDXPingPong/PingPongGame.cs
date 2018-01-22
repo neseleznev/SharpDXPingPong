@@ -74,7 +74,17 @@ namespace SharpDXPingPong
 
         protected override void Update(float deltaTime)
         {
+            if (InputDevice.IsKeyDown(Keys.F2))
+            {
+                StartNewGame();
+            }
+
             _cameraController.Update(deltaTime);
+
+            if (IsGameOver)
+            {
+                return;
+            }
 
             _pad.Update(deltaTime);
 
@@ -87,6 +97,10 @@ namespace SharpDXPingPong
             {
                 _ball.verticalDirection = 1;
                 _ball.verticalDirection *= _pad.GetAcceleration();
+            } else if (newY < _pad.GetPadStopLine())
+            {
+                Console.WriteLine("Game over!");
+                GameOver();
             }
             else if (newY + _ball.Radius.Y > 1.0f)
             {
@@ -160,6 +174,19 @@ namespace SharpDXPingPong
             }
 
             base.Update(deltaTime);
+        }
+
+        private bool IsGameOver;
+        public void GameOver()
+        {
+            IsGameOver = true;
+        }
+
+        public void StartNewGame()
+        {
+            IsGameOver = false;
+            _ball.Reset();
+            _pad.Reset();
         }
     }
 }

@@ -20,19 +20,26 @@ namespace SharpDXPingPong.Components
         internal Vector2 Center;
         internal float Velocity { get; set; }
         
-        internal float verticalDirection = -1;  // down
-        internal float horizontalDirection = -1;  // left
+        internal float verticalDirection;
+        internal float horizontalDirection;
 
         public BallComponent(Game game, string vertexShaderFilename, string pixelShaderFilename, Camera camera)
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
             _camera = camera;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            verticalDirection = -1;  // down
+            horizontalDirection = -1;  // left
+
             BasicRadius = 0.05f;
             Radius = new Vector2(BasicRadius, BasicRadius * Game.GetWidth() / Game.GetHeight());
             Center = new Vector2(0, 0);
             Velocity = 0.007f;
         }
-
         protected override Vector4[] GetPoints()
         {
             const int numpoints = 24;

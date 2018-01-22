@@ -16,7 +16,7 @@ namespace SharpDXPingPong.Components
         private List<Vector4> _points = new List<Vector4>();
         private readonly Camera _camera;
 
-        internal float Height = 0.1f;
+        internal float Height;
         internal float Width { get; set; }
         internal Vector2 Center;
         internal float Velocity { get; set; }
@@ -29,11 +29,16 @@ namespace SharpDXPingPong.Components
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
             this._camera = camera;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            Height = 0.1f;
             Width = 0.25f;
             Center = new Vector2(0.0f, -1 + 0.00625f + this.Height);
             Velocity = 1.0f;
         }
-
         protected override Vector4[] GetPoints()
         {
             _points = new List<Vector4>()

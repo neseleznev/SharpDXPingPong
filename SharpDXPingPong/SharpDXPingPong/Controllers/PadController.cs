@@ -23,6 +23,12 @@ namespace SharpDXPingPong.Controllers
             _inputDevice = inputDevice;
         }
 
+        public void Reset()
+        {
+            _pad.Reset();
+            _series = 0;
+        }
+
         internal void Update(float deltaTime)
         {
             short direction = 0;
@@ -54,8 +60,13 @@ namespace SharpDXPingPong.Controllers
         {
             var leftX = _pad.Center.X - _pad.Width / 2;
             var rightX = _pad.Center.X + _pad.Width / 2;
-            var padY = _pad.Center.Y + _pad.Height / 2;
-            return leftX < x && x < rightX && y < padY + 1e-5f;
+            var padY = GetPadStopLine();
+            return leftX < x && x < rightX && padY - 0.01 < y && y < padY + 1e-5f;
+        }
+
+        public float GetPadStopLine()
+        {
+            return _pad.Center.Y + _pad.Height / 2;
         }
 
         public void IncreaseSpeed()
