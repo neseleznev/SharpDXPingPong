@@ -29,8 +29,8 @@ namespace Engine
 
         protected GameComponent(
             Game game,
-            string vertexShaderFilename = "Shader.hlsl",
-            string pixelShaderFilename = "Shader.hlsl")
+            string vertexShaderFilename,
+            string pixelShaderFilename)
         {
             Game = game;
             VertexShaderFilename = vertexShaderFilename;
@@ -38,7 +38,7 @@ namespace Engine
         }
 
         protected abstract Vector4[] GetPoints();
-        
+
         protected abstract BufferDescription GetBufferDescription();
 
         protected abstract PrimitiveTopology GetPrimitiveTopology();
@@ -96,6 +96,7 @@ namespace Engine
             {
                 Game.Context.VertexShader.SetConstantBuffer(0, StaticContantBuffer);
             }
+
             Game.Context.VertexShader.Set(VertexShader);
             Game.Context.PixelShader.Set(PixelShader);
         }
