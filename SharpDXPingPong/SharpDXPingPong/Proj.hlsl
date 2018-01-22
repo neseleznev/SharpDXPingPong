@@ -26,7 +26,7 @@ PS_IN VSMain(VS_IN input)
 	PS_IN output = (PS_IN)0;
 
 	output.pos = mul(float4(input.pos.xyz, 1.0f), ConstData.WorldViewProj);
-	//output.pos2 = output.pos;
+	//output.pos = input.pos;
 	output.col = input.col;
 
 	return output;

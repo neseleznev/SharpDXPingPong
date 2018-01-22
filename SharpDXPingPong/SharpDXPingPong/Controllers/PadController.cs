@@ -14,13 +14,15 @@ namespace SharpDXPingPong.Controllers
     {
         private readonly PadComponent _pad;
         private readonly InputDevice _inputDevice;
+        private readonly Game _game;
         private int _series;
         private short _previousDirection;
 
-        internal PadController(PadComponent pad, InputDevice inputDevice)
+        internal PadController(PadComponent pad, InputDevice inputDevice, Game game)
         {
             _pad = pad;
             _inputDevice = inputDevice;
+            _game = game;
         }
 
         public void Reset()
@@ -36,8 +38,9 @@ namespace SharpDXPingPong.Controllers
                 direction = -1;
             if (_inputDevice.IsKeyDown(Keys.D))
                 direction = 1;
-            _pad.Center.X += direction * _pad.Velocity * deltaTime;
-            _pad.Center.X = Math.Min(1 - _pad.Width / 2, Math.Max(-1 + _pad.Width / 2, _pad.Center.X));
+            
+            _pad.Position.X += direction * _pad.Velocity * deltaTime;
+            _pad.Position.X = Math.Min(_game.GetWidth() - _pad.Width, Math.Max(0, _pad.Position.X));
             
             if (_previousDirection == direction)
             {
@@ -53,20 +56,19 @@ namespace SharpDXPingPong.Controllers
 
         public float GetAcceleration()
         {
-            return Math.Max(0.25f, Math.Min(1.75f, 1.0f + _series / 100.0f));
+            return Math.Max(0.25f, Math.Min(1.75f, 1.0f + _series / 50.0f));
         }
 
         public bool IsTouching(float x, float y)
         {
-            var leftX = _pad.Center.X - _pad.Width / 2;
-            var rightX = _pad.Center.X + _pad.Width / 2;
-            var padY = _pad.Center.Y + _pad.Height / 2;
-            return leftX < x && x < rightX && padY - 0.01 < y && y < padY + 1e-5f;
+            var padTop = _pad.Position.Y + _pad.Height;
+            return _pad.Position.X < x && x < _pad.Position.X + _pad.Width
+                                       && padTop - 5 < y && y < padTop + 2;
         }
 
         public float GetPadStopLine()
         {
-            return _pad.Center.Y - _pad.Height / 2;
+            return _pad.Position.Y - _pad.Height;
         }
 
         public void IncreaseSpeed()
@@ -77,16 +79,6 @@ namespace SharpDXPingPong.Controllers
         public void DecreaseSpeed()
         {
             _pad.Velocity = _pad.Velocity / 1.25f;
-        }
-
-        public void IncreaseWidth()
-        {
-            _pad.Width = _pad.Width * 1.25f;
-        }
-
-        public void DecreaseWidth()
-        {
-            _pad.Width = _pad.Width / 1.25f;
         }
 
     }

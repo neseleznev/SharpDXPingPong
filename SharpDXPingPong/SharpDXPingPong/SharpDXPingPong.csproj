@@ -75,7 +75,6 @@
     <Compile Include="Components\TexturedQuadComponent.cs" />
     <Compile Include="Components\WarpZone\BallSpeedDown.cs" />
     <Compile Include="Components\WarpZone\BallSpeedUp.cs" />
-    <Compile Include="Components\WarpZone\LongPad.cs" />
     <Compile Include="Components\WarpZone\WarpComponent.cs" />
     <Compile Include="Controllers\PadController.cs" />
     <Compile Include="PingPongGame.cs" />

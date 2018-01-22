@@ -23,6 +23,11 @@ namespace Engine
             //return ProjMatrix;
         }
 
+        public Matrix GetProjectionMatrixOrhographic()
+        {
+            return Matrix.OrthoOffCenterLH(0, _sizeable.GetWidth(), 0, _sizeable.GetHeight(), 0.1f, 1000.0f);
+        }
+
         public Vector2 WorldToScreen(Vector4 target)
         {
             var worldViewProj = ViewMatrix * GetProjectionMatrix();

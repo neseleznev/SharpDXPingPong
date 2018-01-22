@@ -17,7 +17,7 @@ namespace SharpDXPingPong.Components.WarpZone
 
         protected override Vector4 GetColor()
         {
-            return new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
+            return new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         }
     }
 }

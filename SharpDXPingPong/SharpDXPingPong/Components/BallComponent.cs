@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Engine;
 using SharpDX;
 using SharpDX.Direct3D;
@@ -14,32 +11,33 @@ namespace SharpDXPingPong.Components
     {
         private List<Vector4> _points = new List<Vector4>();
         private readonly Camera _camera;
-
-        internal float BasicRadius { get; set; }
-        internal Vector2 Radius;
-        internal Vector2 Center;
+        private readonly Random _random;
+        
+        internal float Radius;
+        internal Vector3 Position;
         internal float Velocity { get; set; }
         
-        internal float verticalDirection;
-        internal float horizontalDirection;
+        internal float VerticalDirection;
+        internal float HorizontalDirection;
 
         public BallComponent(Game game, string vertexShaderFilename, string pixelShaderFilename, Camera camera)
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
             _camera = camera;
+            _random = new Random();
             Reset();
         }
 
         public void Reset()
         {
-            verticalDirection = -1;  // down
-            horizontalDirection = -1;  // left
-
-            BasicRadius = 0.05f;
-            Radius = new Vector2(BasicRadius, BasicRadius * Game.GetWidth() / Game.GetHeight());
-            Center = new Vector2(0, 0);
-            Velocity = 0.007f;
+            VerticalDirection = -1;  // down
+            HorizontalDirection = (float) (_random.NextDouble() * 5 - 2.5f);  // left
+            
+            Radius = 20f;
+            Position = new Vector3(Game.GetWidth() / 2, Game.GetHeight() * 0.75f, 0);
+            Velocity = 1f;
         }
+
         protected override Vector4[] GetPoints()
         {
             const int numpoints = 24;
@@ -47,7 +45,7 @@ namespace SharpDXPingPong.Components
             const float wedgeAngle = 2 * pi / numpoints;
 
             _points = new List<Vector4>();
-            Vector4 Color = new Vector4(212f, 175f, 55f, 1.0f);
+            var color = new Vector4(220f / 256f, 175f / 256f, 55f / 256f, 1.0f);
 
             for (var i = 0; i < numpoints; i++)
             {
@@ -55,24 +53,21 @@ namespace SharpDXPingPong.Components
                 var theta = i * wedgeAngle;
 
                 //Compute X and Y locations
-                var x = (float)(Center.X + Radius.X * Math.Cos(theta));
-                var y = (float)(Center.Y - Radius.Y * Math.Sin(theta));
+                var x = (float)(Radius * Math.Cos(theta));
+                var y = (float)(-Radius * Math.Sin(theta));
                 _points.Add(new Vector4(x, y, 0.0f, 1.0f));
-                _points.Add(Color);
+                _points.Add(color);
 
                 var theta1 = (i + 1) * wedgeAngle;
-                var x1 = (float) (Center.X + Radius.X * Math.Cos(theta1));
-                var y1 = (float) (Center.Y - Radius.Y * Math.Sin(theta1));
+                var x1 = (float) (Radius * Math.Cos(theta1));
+                var y1 = (float) (-Radius * Math.Sin(theta1));
                 _points.Add(new Vector4(x1, y1, 0.0f, 1.0f));
-                _points.Add(Color);
+                _points.Add(color);
 
-                _points.Add(new Vector4(Center.X, Center.Y, 0.0f, 1.0f));
-                _points.Add(Color);
+                _points.Add(new Vector4(0, 0, 0, 1.0f));
+                _points.Add(color);
             }
-
-            _points.Add(new Vector4(Center.X, Center.Y, 1.0f, 1.0f));
-            _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
+            
             return _points.ToArray();
         }
 
@@ -103,11 +98,7 @@ namespace SharpDXPingPong.Components
 
         public override void Update(float deltaTime)
         {
-            var worldViewProj = _camera.ViewMatrix * _camera.GetProjectionMatrix();
-
-            Radius.X = BasicRadius;
-            Radius.Y = BasicRadius * Game.GetWidth() / Game.GetHeight();
-            InitBuffer();
+            var worldViewProj = Matrix.Translation(Position) * _camera.GetProjectionMatrixOrhographic();
             Game.Context.UpdateSubresource(ref worldViewProj, StaticContantBuffer);
         }
 
