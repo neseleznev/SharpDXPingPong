@@ -35,14 +35,14 @@ namespace SharpDXPingPong.Components
                 _points.Add(new Vector4(-dist, step * i, 0.0f, 1.0f)); _points.Add(new Vector4(0.7f, 0.7f, 0.7f, 1.0f));
             }
 
-            _points.Add(Vector4.Zero); _points.Add(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-            _points.Add(Vector4.UnitX * 100.0f); _points.Add(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-            _points.Add(Vector4.Zero); _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-            _points.Add(Vector4.UnitY * 100.0f); _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-            _points.Add(Vector4.Zero); _points.Add(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-            _points.Add(Vector4.UnitZ * 100.0f); _points.Add(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+//            _points.Add(Vector4.Zero); _points.Add(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+//            _points.Add(Vector4.UnitX * 100.0f); _points.Add(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+//
+//            _points.Add(Vector4.Zero); _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+//            _points.Add(Vector4.UnitY * 100.0f); _points.Add(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+//
+//            _points.Add(Vector4.Zero); _points.Add(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+//            _points.Add(Vector4.UnitZ * 100.0f); _points.Add(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
             return _points.ToArray();
         }

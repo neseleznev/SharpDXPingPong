@@ -30,6 +30,7 @@ namespace Engine
         protected DepthStencilView DepthView;
         protected RenderTargetView RenderView;
         public DeviceContext Context;
+        public TextureLoader TextureLoader { protected set; get; }
         private Stopwatch _clock;
         public TimeSpan TotalTime { protected set; get; }
         private bool _isShutdownRequested;
@@ -43,6 +44,7 @@ namespace Engine
             Components = new List<IGameComponent>();
 
             InputDevice = new InputDevice(this);
+            TextureLoader = new TextureLoader(this);
 
             InitResources();
             InitBackBuffer();

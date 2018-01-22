@@ -10,8 +10,9 @@ using SharpDX.Direct3D11;
 
 namespace SharpDXPingPong.Components
 {
-    class BallComponent : GameComponent
+    abstract class WarpComponent : GameComponent
     {
+
         private List<Vector4> _points = new List<Vector4>();
         private readonly Camera _camera;
 
@@ -19,19 +20,22 @@ namespace SharpDXPingPong.Components
         internal Vector2 Radius;
         internal Vector2 Center;
         internal float Velocity { get; set; }
+        internal Vector4 Color = new Vector4(0, 0, 0, 0);
+        private readonly Random _rnd;
+        private bool _appeared;
         
-        internal float verticalDirection = -1;  // down
-        internal float horizontalDirection = -1;  // left
-
-        public BallComponent(Game game, string vertexShaderFilename, string pixelShaderFilename, Camera camera)
+        public WarpComponent(Game game, string vertexShaderFilename, string pixelShaderFilename, Camera camera)
             : base(game, vertexShaderFilename, pixelShaderFilename)
         {
             _camera = camera;
             BasicRadius = 0.05f;
             Radius = new Vector2(BasicRadius, BasicRadius * Game.GetWidth() / Game.GetHeight());
-            Center = new Vector2(0, 0);
-            Velocity = 0.007f;
+            Center = new Vector2(10, 10);
+            Velocity = 0.2f;
+            _rnd = new Random();
         }
+
+        protected abstract Vector4 GetColor();
 
         protected override Vector4[] GetPoints()
         {
@@ -40,7 +44,6 @@ namespace SharpDXPingPong.Components
             const float wedgeAngle = 2 * pi / numpoints;
 
             _points = new List<Vector4>();
-            Vector4 Color = new Vector4(212f, 175f, 55f, 1.0f);
 
             for (var i = 0; i < numpoints; i++)
             {
@@ -54,8 +57,8 @@ namespace SharpDXPingPong.Components
                 _points.Add(Color);
 
                 var theta1 = (i + 1) * wedgeAngle;
-                var x1 = (float) (Center.X + Radius.X * Math.Cos(theta1));
-                var y1 = (float) (Center.Y - Radius.Y * Math.Sin(theta1));
+                var x1 = (float)(Center.X + Radius.X * Math.Cos(theta1));
+                var y1 = (float)(Center.Y - Radius.Y * Math.Sin(theta1));
                 _points.Add(new Vector4(x1, y1, 0.0f, 1.0f));
                 _points.Add(Color);
 
@@ -97,7 +100,7 @@ namespace SharpDXPingPong.Components
         public override void Update(float deltaTime)
         {
             var worldViewProj = _camera.ViewMatrix * _camera.GetProjectionMatrix();
-
+            Center.Y = Center.Y - deltaTime * Velocity;
             Radius.X = BasicRadius;
             Radius.Y = BasicRadius * Game.GetWidth() / Game.GetHeight();
             InitBuffer();
@@ -113,14 +116,22 @@ namespace SharpDXPingPong.Components
             Game.Context.Rasterizer.State = oldState;
         }
 
-        public void IncreaseSpeed()
+        public void DropRandomly()
         {
-            Velocity *= 1.25f;
+            if (_appeared)
+                return;
+            Center.X = (float) (_rnd.NextDouble() * 1.8 - 0.9);
+            Center.Y = 0.0f;
+            Color = GetColor();
+            _appeared = true;
         }
 
-        public void DecreaseSpeed()
+        public void Hide()
         {
-            Velocity /= 1.25f;
+            Center.X = -2;
+            Center.Y = -2;
+            Color = new Vector4(0, 0, 0, 0);
+            _appeared = false;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Engine
             PixelShader = new PixelShader(Game.Device, PixelShaderByteCode);
         }
 
-        private void InitInputLayout()
+        protected virtual void InitInputLayout()
         {
             Layout = new InputLayout(
                 Game.Device,
@@ -87,7 +87,7 @@ namespace Engine
             // dynamicConstantBuffer = new Buffer(device, Utilities.SizeOf<Matrix>(), ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
         }
 
-        protected void SetContext()
+        protected virtual void SetContext()
         {
             Game.Context.InputAssembler.InputLayout = Layout;
             Game.Context.InputAssembler.PrimitiveTopology = PrimitiveTopology;
